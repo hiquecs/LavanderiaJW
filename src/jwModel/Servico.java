@@ -1,6 +1,5 @@
 package jwModel;
 
-
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -14,7 +13,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-@Table(name="servico")
+@Table(name = "servico")
 public class Servico {
 
 	@Id
@@ -22,7 +21,7 @@ public class Servico {
 	private Integer id;
 
 	private String responsavel;
-	
+
 	@Temporal(TemporalType.DATE)
 	private Date dataServico;
 	@Temporal(TemporalType.DATE)
@@ -56,7 +55,7 @@ public class Servico {
 	private String meia2GC;
 
 	@ManyToOne
-	@JoinColumn(name="id_cliente")
+	@JoinColumn(name = "id_cliente")
 	private Cliente cliente;
 
 	public Servico() {
@@ -69,7 +68,7 @@ public class Servico {
 			Integer meia1gq, String meia1gc, Integer camisa2q, String camisa2c, Integer calcao2q, String calcao2c,
 			Integer meia2q, String meia2c, Integer camisa2gq, String camisa2gc, Integer calcao2gq, String calcao2gc,
 			Integer meia2gq, String meia2gc, Cliente cliente) {
-		
+
 		this.id = id;
 		this.responsavel = responsavel;
 		this.dataServico = dataServico;
@@ -358,5 +357,12 @@ public class Servico {
 
 	public void setCliente(Cliente cliente) {
 		this.cliente = cliente;
-	}	
+	}
+
+	@Override
+	public String toString() {
+		return "Cod= " + id+ "     dataServico= " + dataServico
+				+ "    dataEntrega= " + dataEntrega+ "    responsavel= " + responsavel;
+	}
+
 }

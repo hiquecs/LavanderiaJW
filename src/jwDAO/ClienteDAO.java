@@ -29,7 +29,7 @@ public class ClienteDAO {
 		emf.close();
 	}
 
-	public void remover(Cliente cliente) {
+	public void deletar(Cliente cliente) {
 
 		em.getTransaction().begin();
 		Cliente cli = em.find(Cliente.class, cliente.getId());
@@ -58,7 +58,6 @@ public class ClienteDAO {
 		return clientes;
 	}
 	
-	
 	@SuppressWarnings("unchecked")
 	public List <Cliente> buscarPorNome(String nome){
 		
@@ -68,5 +67,14 @@ public class ClienteDAO {
 		List<Cliente> clientes = query.getResultList();		
 
 		return clientes;
+	}
+	
+	public void atualizar(Cliente cliente) {
+		
+		em.getTransaction().begin();
+		em.merge(cliente);
+		em.getTransaction().commit();
+		em.close();
+		emf.close();
 	}
 }

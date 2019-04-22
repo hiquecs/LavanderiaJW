@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -31,10 +32,10 @@ public class TelaPrincipal {
 	private JFrame frmLavanderiaEsportivaJw;
 	private JTextField txtServiosTotaisDia;
 	private SimpleDateFormat sdf;
-	private JTextArea textArea; 
+	private JTextArea textArea;
 
 	public static void main(String[] args) {
-		
+
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -42,7 +43,8 @@ public class TelaPrincipal {
 					window.frmLavanderiaEsportivaJw.setVisible(true);
 					window.frmLavanderiaEsportivaJw.setLocationRelativeTo(null);
 					window.frmLavanderiaEsportivaJw.setResizable(false);
-					window.frmLavanderiaEsportivaJw.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/jw.jpg")));
+					window.frmLavanderiaEsportivaJw
+							.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/jw.jpg")));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -52,18 +54,16 @@ public class TelaPrincipal {
 
 	public TelaPrincipal() {
 		initialize();
-		
-	
 	}
 
 	private void initialize() {
-		
+
 		frmLavanderiaEsportivaJw = new JFrame();
 		frmLavanderiaEsportivaJw.setLocale(new Locale("pt", "BR"));
 		frmLavanderiaEsportivaJw.getContentPane().setLocale(new Locale("pt", "BR"));
 		frmLavanderiaEsportivaJw.setFocusableWindowState(true);
 		frmLavanderiaEsportivaJw.getContentPane().setLayout(null);
-		
+
 		ImageIcon imagem1 = new ImageIcon(getClass().getResource("/inicial.png"));
 		JLabel lblNewLabel = new JLabel(imagem1);
 		lblNewLabel.setBounds(0, 0, 1001, 150);
@@ -77,19 +77,18 @@ public class TelaPrincipal {
 		txtServiosTotaisDia.setForeground(new Color(0, 0, 255));
 		txtServiosTotaisDia.setFont(new Font("Goudy Old Style", Font.BOLD, 17));
 		txtServiosTotaisDia.setHorizontalAlignment(SwingConstants.CENTER);
-		txtServiosTotaisDia.setText("Servi\u00E7os  Totais  Dia   "+sdf.format( new Date( System.currentTimeMillis())));
+		txtServiosTotaisDia.setText("Servi\u00E7os  Totais  Dia   " + sdf.format(new Date(System.currentTimeMillis())));
 		txtServiosTotaisDia.setBounds(156, 224, 701, 28);
 		frmLavanderiaEsportivaJw.getContentPane().add(txtServiosTotaisDia);
 		txtServiosTotaisDia.setColumns(10);
-		
+
 		JButton atuali = new JButton("Atualizar");
 		atuali.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				atualiza();
 			}
 		});
-		
-	
+
 		textArea = new JTextArea();
 		textArea.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
 		textArea.setFont(new Font("Calibri Light", Font.BOLD, 15));
@@ -97,14 +96,14 @@ public class TelaPrincipal {
 		JScrollPane st = new JScrollPane(textArea);
 		st.setBounds(156, 252, 701, 396);
 		frmLavanderiaEsportivaJw.getContentPane().add(st);
-		
+
 		atuali.setForeground(new Color(0, 0, 255));
 		atuali.setFont(new Font("Goudy Old Style", Font.BOLD, 15));
 		atuali.setBackground(new Color(64, 224, 208));
 		atuali.setBounds(867, 224, 107, 41);
 		frmLavanderiaEsportivaJw.getContentPane().add(atuali);
 		atualiza();
-		
+
 		ImageIcon imagem2 = new ImageIcon(getClass().getResource("/nuvens.jpg"));
 		JLabel lblNewLabel_1 = new JLabel(imagem2);
 		lblNewLabel_1.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -135,7 +134,6 @@ public class TelaPrincipal {
 				ClientesCadastrados cad = new ClientesCadastrados();
 				cad.setLocationRelativeTo(null);
 				cad.setVisible(true);
-				
 			}
 		});
 		clientesCadastrados.setForeground(Color.BLUE);
@@ -157,25 +155,30 @@ public class TelaPrincipal {
 		JButton servicosCadastrados = new JButton("Servi\u00E7os Cadastrados");
 		servicosCadastrados.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+
+				ServicosCadastrados cad = new ServicosCadastrados();
+				cad.setLocationRelativeTo(null);
+				cad.setVisible(true);
 			}
 		});
 		servicosCadastrados.setForeground(Color.BLUE);
 		servicosCadastrados.setBackground(new Color(224, 255, 255));
 		menuBar.add(servicosCadastrados);
 	}
-	
+
 	private void atualiza() {
-		
+
 		ServicoDAO dao = new ServicoDAO();
-		
-		sdf = new SimpleDateFormat("dd/MM/yyyy");
-		sdf.format( new Date( System.currentTimeMillis()));
-		
-		List <Servico> list = dao.buscarTodos();
-		
+		Date data = new Date();
+		GregorianCalendar dataCal = new GregorianCalendar();
+		dataCal.setTime(data);
+
+		List<Servico> list = dao.BuscarPorData(dataCal);
+
 		textArea.setText("\n");
-		for(Servico c: list) {
-		textArea.setText(textArea.getText()+ c.getId()+"  |   "+c.getCliente().getNome()+"   |  "+c.getDataServico()+"   |  "+c.getDataEntrega()+"   |  "+c.getTime()+"\n\n");
+		for (Servico c : list) {
+			textArea.setText(textArea.getText() + c.getId() + "  |   " + c.getCliente().getNome() + "   |  "
+					+ c.getDataServico() + "   |  " + c.getDataEntrega() + "   |  " + c.getTime() + "\n\n");
 		}
 	}
 }

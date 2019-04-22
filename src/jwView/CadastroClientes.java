@@ -133,6 +133,8 @@ public class CadastroClientes extends JDialog {
 					JOptionPane.showMessageDialog(null, "Cliente Salvo Com Sucesso !!", "SUCESSO",
 							JOptionPane.INFORMATION_MESSAGE);
 					dispose();
+					
+					
 
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(null, "Erro Cliente não salvo !!", "ERRO", JOptionPane.ERROR_MESSAGE);

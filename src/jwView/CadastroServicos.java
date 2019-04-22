@@ -3,13 +3,20 @@ package jwView;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
@@ -24,6 +31,7 @@ import jwDAO.ClienteDAO;
 import jwDAO.ServicoDAO;
 import jwModel.Cliente;
 import jwModel.Servico;
+import java.awt.SystemColor;
 
 public class CadastroServicos extends JDialog {
 
@@ -95,23 +103,25 @@ public class CadastroServicos extends JDialog {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/jw.jpg")));
 		setBounds(100, 100, 1031, 814);
 		getContentPane().setLayout(new BorderLayout());
-		contentPanel.setBackground(new Color(0, 153, 153));
+		contentPanel.setBackground(SystemColor.controlHighlight);
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 
 		nome = new JTextField(cliente.getNome());
+		nome.setBackground(new Color(255, 255, 255));
 		nome.setFont(new Font("Tahoma", Font.BOLD, 11));
 		nome.setEditable(false);
 		nome.setBounds(349, 107, 414, 31);
 		contentPanel.add(nome);
 		nome.setColumns(10);
 
-		JLabel lblNewLabel = new JLabel("Cadastro de Servi\u00E7os");
-		lblNewLabel.setForeground(new Color(255, 0, 0));
-		lblNewLabel.setFont(new Font("Copperplate Gothic Light", Font.PLAIN, 23));
-		lblNewLabel.setBounds(323, 45, 340, 31);
-		contentPanel.add(lblNewLabel);
+		ImageIcon imagem1 = new ImageIcon(getClass().getResource("/inicial1.png"));
+		JLabel ser = new JLabel(imagem1);
+		ser.setForeground(new Color(255, 0, 0));
+		ser.setFont(new Font("Copperplate Gothic Light", Font.PLAIN, 23));
+		ser.setBounds(267, 21, 464, 87);
+		contentPanel.add(ser);
 
 		JLabel lblNome = new JLabel("Cliente");
 		lblNome.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -208,11 +218,39 @@ public class CadastroServicos extends JDialog {
 					serDao.salvar(servico);
 
 					Object[] options = { "Sim", "Não" };
-					int i = JOptionPane.showOptionDialog(null, "Serviço Salvo Com Sucesso !!\n Deseja Imprimir ?", "Informação",
-							JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,null, options, options[0]);
+					int i = JOptionPane.showOptionDialog(null, "Serviço Salvo Com Sucesso !!\n Deseja Imprimir ?",
+							"Informação", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options,
+							options[0]);
 
 					if (i == 0) {
+						
+						PrinterJob job = PrinterJob.getPrinterJob();
+						job.setJobName("Serviço");
+						job.setPrintable(new Printable() {
 
+							public int print(Graphics g, PageFormat pf, int page) throws PrinterException {
+								if (page > 0) {
+									return NO_SUCH_PAGE;
+								}
+
+								Graphics2D g2d = (Graphics2D) g;
+								g2d.translate(pf.getImageableX(), pf.getImageableY());
+								g2d.scale(contentPanel.getAlignmentX() * 1.25, contentPanel.getAlignmentY() * 1.19);
+								contentPanel.printAll(g);
+
+								return PAGE_EXISTS;
+							}
+						});
+
+						Boolean ok = job.printDialog();
+
+						if (ok) {
+							try {
+								job.print();
+							} catch (PrinterException e) {
+
+							}
+						}
 						dispose();
 					} else {
 						dispose();
@@ -220,11 +258,12 @@ public class CadastroServicos extends JDialog {
 				} catch (Exception e) {
 
 				}
+
 			}
 		});
 		salvar.setForeground(new Color(0, 0, 255));
 		salvar.setFont(new Font("Broadway", Font.PLAIN, 11));
-		salvar.setBackground(new Color(0, 128, 0));
+		salvar.setBackground(new Color(153, 255, 153));
 		salvar.setBounds(673, 705, 121, 40);
 		contentPanel.add(salvar);
 
@@ -235,29 +274,29 @@ public class CadastroServicos extends JDialog {
 				endereco.setText("");
 				time.setText("");
 				modalidade.setText("");
-				calcao1Q.setText("");
+				calcao1Q.setText("000");
 				calcao1C.setText("");
-				calcao2Q.setText("");
+				calcao2Q.setText("000");
 				calcao2C.setText("");
-				camisa1Q.setText("");
+				camisa1Q.setText("000");
 				camisa1C.setText("");
-				camisa2Q.setText("");
+				camisa2Q.setText("000");
 				camisa2C.setText("");
-				meia1Q.setText("");
+				meia1Q.setText("000");
 				meia1C.setText("");
-				meia2Q.setText("");
+				meia2Q.setText("000");
 				meia2C.setText("");
-				camisa1GQ.setText("");
+				camisa1GQ.setText("000");
 				camisa1GC.setText("");
-				camisa2GQ.setText("");
+				camisa2GQ.setText("000");
 				camisa2GC.setText("");
-				calcao1GQ.setText("");
+				calcao1GQ.setText("000");
 				calcao1GC.setText("");
-				calcao2GQ.setText("");
+				calcao2GQ.setText("000");
 				calcao2GC.setText("");
-				meia1GQ.setText("");
+				meia1GQ.setText("000");
 				meia1GC.setText("");
-				meia2GQ.setText("");
+				meia2GQ.setText("000");
 				meia2GC.setText("");
 				dataEntrega.setText(null);
 				dataServico.setText(null);
@@ -266,7 +305,7 @@ public class CadastroServicos extends JDialog {
 		});
 		limpar.setForeground(new Color(0, 0, 205));
 		limpar.setFont(new Font("Broadway", Font.PLAIN, 11));
-		limpar.setBackground(new Color(255, 0, 0));
+		limpar.setBackground(new Color(255, 102, 102));
 		limpar.setBounds(440, 705, 121, 40);
 		contentPanel.add(limpar);
 
@@ -278,11 +317,12 @@ public class CadastroServicos extends JDialog {
 		});
 		cancelar.setForeground(new Color(0, 0, 205));
 		cancelar.setFont(new Font("Broadway", Font.PLAIN, 11));
-		cancelar.setBackground(new Color(255, 255, 0));
+		cancelar.setBackground(new Color(255, 255, 153));
 		cancelar.setBounds(202, 705, 121, 40);
 		contentPanel.add(cancelar);
 
 		id = new JTextField(cliente.getId().toString());
+		id.setBackground(new Color(255, 255, 255));
 		id.setHorizontalAlignment(SwingConstants.CENTER);
 		id.setFont(new Font("Tahoma", Font.BOLD, 11));
 		id.setEditable(false);
@@ -743,9 +783,9 @@ public class CadastroServicos extends JDialog {
 		lblDataServio.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblDataServio.setBounds(138, 600, 78, 25);
 		contentPanel.add(lblDataServio);
-		
+
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-	
+
 		try {
 			javax.swing.text.MaskFormatter data = new javax.swing.text.MaskFormatter("##/##/####");
 			dataServico = new javax.swing.JFormattedTextField(data);
@@ -753,7 +793,7 @@ public class CadastroServicos extends JDialog {
 			dataServico.setFont(new Font("Tahoma", Font.BOLD, 13));
 			dataServico.setText("");
 			dataServico.setBounds(228, 600, 95, 24);
-			dataServico.setText(sdf.format( new Date( System.currentTimeMillis())));
+			dataServico.setText(sdf.format(new Date(System.currentTimeMillis())));
 			contentPanel.add(dataServico);
 
 		} catch (Exception e) {

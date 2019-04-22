@@ -2,113 +2,144 @@ package jwView;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
 
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JButton;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import jwDAO.ClienteDAO;
+import jwModel.Cliente;
+import javax.swing.JTextField;
 
 public class ClientesCadastrados extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
-	private JTextArea textArea; 
-	private JTextField codCliente;
+	private JList<?> list;
+	private JTextField nome;
 
+	@SuppressWarnings("rawtypes")
 	public ClientesCadastrados() {
-		setTitle("Clientes");
 		setModal(true);
+		setBounds(100, 100, 1031, 814);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/jw.jpg")));
-		setBounds(100, 100, 1031, 814);
 		getContentPane().setLayout(new BorderLayout());
-		contentPanel.setBackground(new Color(0, 153, 153));
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPanel.setBackground(new Color(0, 153, 153));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
+		contentPanel.setLayout(null);
 
-		JLabel lblNewLabel = new JLabel("Clientes Cadastrados");
-		lblNewLabel.setForeground(new Color(255, 0, 0));
-		lblNewLabel.setFont(new Font("Copperplate Gothic Light", Font.ITALIC, 23));
-		lblNewLabel.setBounds(358, 38, 285, 31);
-		contentPanel.add(lblNewLabel);
-		
-		textArea = new JTextArea();
-		textArea.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
-		textArea.setFont(new Font("Calibri Light", Font.BOLD, 15));
-		textArea.setEditable(false);
-		JScrollPane st = new JScrollPane(textArea);
-		st.setBounds(155, 150, 701, 396);
-		contentPanel.add(st);
-		
-		JButton cancelar = new JButton("Cancelar");
-		cancelar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(112, 151, 795, 489);
+		contentPanel.add(scrollPane);
+
+		ClienteDAO dao = new ClienteDAO();
+
+		List<Cliente> serv = dao.buscarTodos();
+		DefaultListModel<Cliente> listModel = new DefaultListModel<Cliente>();
+		for (Cliente c : serv) {
+			listModel.addElement(c);
+		}
+		@SuppressWarnings("unchecked")
+		JList<Cliente> list_1 = new JList(listModel);
+		list_1.setForeground(Color.BLUE);
+		list_1.setFont(new Font("Arial Black", Font.BOLD, 11));
+		list_1.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		scrollPane.setViewportView(list_1);
+
+		JButton btnNewButton = new JButton("Visualisar Cliente");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+				ClienteDAO dao = new ClienteDAO();
+				Cliente cli = (Cliente) list_1.getSelectedValue();
+				cli = dao.buscar(cli.getId());
+				ClienteAlteracao cliA = new ClienteAlteracao(cli);
+				cliA.setLocationRelativeTo(null);
+				cliA.setVisible(true);
 				dispose();
 			}
 		});
-		cancelar.setForeground(new Color(0, 0, 205));
-		cancelar.setFont(new Font("Broadway", Font.PLAIN, 11));
-		cancelar.setBackground(new Color(255, 0, 0));
-		cancelar.setBounds(747, 637, 121, 40);
-		contentPanel.add(cancelar);
+		btnNewButton.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 11));
+		btnNewButton.setForeground(Color.BLUE);
+		btnNewButton.setBounds(767, 672, 140, 33);
+		btnNewButton.setBackground(new Color(64, 224, 208));
+		contentPanel.add(btnNewButton);
+
+		JLabel lblServiosCadastrados = new JLabel("Clientes Cadastrados");
+		lblServiosCadastrados.setForeground(Color.RED);
+		lblServiosCadastrados.setFont(new Font("Copperplate Gothic Light", Font.ITALIC, 23));
+		lblServiosCadastrados.setBounds(357, 36, 285, 31);
+		contentPanel.add(lblServiosCadastrados);
 		
-		JButton editar = new JButton("Editar");
-	    editar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				Integer num = null;	
-				try {
-			    num = Integer.parseInt(codCliente.getText());
-				}catch(Exception  es) {
-				JOptionPane.showMessageDialog(null,"Codigo do Cliente invalido","Erro", JOptionPane.ERROR_MESSAGE,null);
-				codCliente.setText("00000");
-				}
-				
-		    if(num != 0) {
-				
-			}else {
-				JOptionPane.showMessageDialog(null,"Codigo do Cliente invalido","Erro", JOptionPane.ERROR_MESSAGE,null);
-				codCliente.setText("00000");
-			}
-			
+		JButton button = new JButton("cancelar");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				dispose();
 			}
 		});
-		editar.setForeground(new Color(0, 0, 205));
-		editar.setFont(new Font("Broadway", Font.PLAIN, 11));
-		editar.setBackground(new Color(34, 139, 34));
-		editar.setBounds(747, 571, 121, 40);
-		contentPanel.add(editar);
+		button.setForeground(new Color(0, 0, 205));
+		button.setFont(new Font("Broadway", Font.PLAIN, 11));
+		button.setBackground(Color.RED);
+		button.setBounds(612, 672, 140, 33);
+		contentPanel.add(button);
 		
-		try {
-			javax.swing.text.MaskFormatter quant = new javax.swing.text.MaskFormatter("#####");
-			codCliente = new javax.swing.JFormattedTextField(quant);
-			codCliente.setHorizontalAlignment(SwingConstants.CENTER);
-			codCliente.setFont(new Font("Tahoma", Font.PLAIN, 14));
-			codCliente.setBounds(639, 574, 86, 31);
-			contentPanel.add(codCliente);
-	        codCliente.setText("00000");
-			codCliente.setColumns(10);	
-		} catch (Exception e) {
-		}
-		
-		JLabel lblDigiteOCodigo = new JLabel("Digite o codigo do Cliente Para edit\u00E1-lo :");
-		lblDigiteOCodigo.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 13));
-		lblDigiteOCodigo.setForeground(new Color(0, 0, 205));
-		lblDigiteOCodigo.setBounds(371, 577, 260, 22);
-		contentPanel.add(lblDigiteOCodigo);
+		JButton pesquisar = new JButton("Pesquisar");
+		pesquisar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				ClienteDAO dao = new ClienteDAO();
 
+				listModel.clear();
+				String a = nome.getText();
+				List<Cliente> serv = dao.buscarPorNome(a);
+				DefaultListModel<Cliente> listModel = new DefaultListModel<Cliente>();
+				for (Cliente c : serv) {
+					listModel.addElement(c);
+				}
+				list_1.setModel(listModel);	
+			}
+		});
+		pesquisar.setForeground(new Color(0, 0, 128));
+		pesquisar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 11));
+		pesquisar.setBackground(new Color(0, 128, 0));
+		pesquisar.setBounds(767, 88, 123, 31);
+		contentPanel.add(pesquisar);
+		
+		nome = new JTextField();
+		nome.setFont(new Font("Tahoma", Font.BOLD, 13));
+		nome.setColumns(10);
+		nome.setBounds(201, 87, 535, 31);
+		contentPanel.add(nome);
+		
+		JLabel label = new JLabel("Nome Completo");
+		label.setForeground(new Color(0, 0, 128));
+		label.setFont(new Font("Tahoma", Font.BOLD, 14));
+		label.setBounds(79, 88, 112, 25);
+		contentPanel.add(label);
+		{
+			
+			list = new JList(); 
+			list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+			list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+			list.setVisibleRowCount(-1);
+			JScrollPane listScroller = new JScrollPane(list);
+			listScroller.setPreferredSize(new Dimension(250, 80));
+
+		}
 	}
 }
